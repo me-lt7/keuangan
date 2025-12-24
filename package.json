@@ -7,9 +7,16 @@
     "build": "next build",
     "export": "next build && next export",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cap:sync": "npm run build && npx cap sync android",
+    "cap:build-debug": "npm run build && npx cap sync android && powershell -ExecutionPolicy Bypass -File build-apk.ps1 -BuildType debug",
+    "cap:build-release": "npm run build && npx cap sync android && powershell -ExecutionPolicy Bypass -File build-apk.ps1 -BuildType release"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/filesystem": "^8.0.0",
     "next": "^16.1.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",

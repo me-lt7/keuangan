@@ -1,0 +1,70 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Build Next.js
+      run: npm run build
+    
+    - name: Sync Capacitor
+      run: npx cap sync android
+    
+    - name: Build APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug.apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      if: github.event_name == 'push'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: apk-${{ github.run_number }}
+        release_name: APK Build ${{ github.run_number }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload to Release
+      uses: actions/upload-release-asset@v1
+      if: github.event_name == 'push'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: android/app/build/outputs/apk/debug/app-debug.apk
+        asset_name: keuangan-app-debug.apk
+        asset_content_type: application/vnd.android.package-archive
