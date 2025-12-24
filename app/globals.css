@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  /* Let Tailwind utility classes control text color to avoid accidental
+     white-on-white issues; keep the CSS variable available for components
+     that explicitly read it. */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Improve mobile rendering and touch behavior */
+html, body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* Make buttons/controls more touch-friendly by providing a small utility
+   class (used in components via className). */
+.touch-manipulation {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  touch-action: manipulation;
+}
+
+/* Decorative gradient blobs animation */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 30px) scale(0.95); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 8s ease-in-out infinite both;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+/* radial gradient overlay utility */
+.bg-gradient-radial {
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.06), transparent 15%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.04), transparent 20%);
+}
+
+/* Print styles */
+@media print {
+  html, body {
+    /* Force a white paper background and remove any background images/gradients
+       which some browsers treat as graphics (and may be disabled in print prefs). */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: white !important;
+    background-image: none !important;
+    background-repeat: no-repeat !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+  .print-only {
+    display: block !important;
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 12pt;
+    line-height: 1.2;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}
+
+/* By default hide elements meant only for printed output. They will be
+   revealed inside the @media print block above. */
+.print-only {
+  display: none;
+}
+
